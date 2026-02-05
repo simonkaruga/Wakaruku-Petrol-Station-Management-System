@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const QRCode = require('qrcode');
 const speakeasy = require('speakeasy');
-const User = require('../models/user');
+const { User, Sequelize } = require('../models');
 const { authenticate } = require('../middleware/auth');
 const ErrorResponse = require('../utils/errorResponse');
 
@@ -24,13 +24,10 @@ router.post('/register', async (req, res, next) => {
     }
 
     // Check if user exists
-    const existingUser = await User.findOne({ 
-      where: { 
-        $or: [{ email }, { username }] 
-      } 
-    });
+    const existingUserByEmail = await User.findOne({ where: { email } });
+    const existingUserByUsername = await User.findOne({ where: { username } });
 
-    if (existingUser) {
+    if (existingUserByEmail || existingUserByUsername) {
       return res.status(400).json({
         success: false,
         message: 'User with this email or username already exists'

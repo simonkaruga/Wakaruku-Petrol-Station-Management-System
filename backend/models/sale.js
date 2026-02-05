@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'CreditTransactions',
+        model: 'credit_transactions',
         key: 'id'
       }
     },
