@@ -286,10 +286,10 @@ async function createTables() {
     
     await pool.query(`
       INSERT INTO users (username, email, password_hash, role)
-      VALUES ('admin', 'admin@wakaruku.com', $1, 'admin')
+      VALUES ('simon', 'simon@wakaruku.com', $1, 'admin')
       ON CONFLICT (username) DO NOTHING
     `, [adminPassword]);
-    console.log('✅ Default admin user created (username: admin, password: admin123)');
+    console.log('✅ Default admin user created (username: simon, password: admin123)');
 
     console.log('\n🎉 Database setup completed successfully!');
     process.exit(0);

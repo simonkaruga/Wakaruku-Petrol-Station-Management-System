@@ -136,6 +136,34 @@ module.exports = (sequelize, DataTypes) => {
     totalExpenses: {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0
+    },
+    isLocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    petrolBuyPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    petrolSellPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    dieselBuyPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    dieselSellPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    keroseneBuyPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    keroseneSellPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
     }
   }, {
     sequelize,

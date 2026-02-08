@@ -86,6 +86,52 @@ router.get('/', authenticateToken, async (req, res, next) => {
   }
 });
 
+// @desc    Get inventory summary
+// @route   GET /api/inventory/summary
+// @access  Private
+router.get('/summary', authenticateToken, async (req, res, next) => {
+  try {
+    const summary = await Inventory.findAll({
+      attributes: [
+        'productId',
+        [Sequelize.fn('SUM', Sequelize.col('quantity')), 'totalQuantity'],
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'totalLocations']
+      ],
+      group: ['productId'],
+      include: [
+        {
+          model: Product,
+          as: 'product',
+          attributes: ['name', 'category', 'unit']
+        }
+      ],
+      raw: true
+    });
+
+    const totalValue = await Inventory.sum('quantity', {
+      include: [
+        {
+          model: Product,
+          as: 'product',
+          attributes: []
+        }
+      ],
+      raw: true
+    });
+
+    res.json({
+      success: true,
+      data: {
+        summary,
+        totalValue: totalValue || 0
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @desc    Get single inventory item
 // @route   GET /api/inventory/:id
 // @access  Private
@@ -261,52 +307,6 @@ router.get('/:id/movements', authenticateToken, async (req, res, next) => {
       data: {
         inventory,
         deliveries
-      }
-    });
-
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Get inventory summary
-// @route   GET /api/inventory/summary
-// @access  Private
-router.get('/summary', authenticateToken, async (req, res, next) => {
-  try {
-    const summary = await Inventory.findAll({
-      attributes: [
-        'productId',
-        [Sequelize.fn('SUM', Sequelize.col('quantity')), 'totalQuantity'],
-        [Sequelize.fn('COUNT', Sequelize.col('id')), 'totalLocations']
-      ],
-      group: ['productId'],
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          attributes: ['name', 'category', 'unit']
-        }
-      ],
-      raw: true
-    });
-
-    const totalValue = await Inventory.sum('quantity', {
-      include: [
-        {
-          model: Product,
-          as: 'product',
-          attributes: []
-        }
-      ],
-      raw: true
-    });
-
-    res.json({
-      success: true,
-      data: {
-        summary,
-        totalValue: totalValue || 0
       }
     });
 

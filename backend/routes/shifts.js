@@ -16,7 +16,7 @@ const router = express.Router();
 // @access  Private
 router.get('/', authenticateToken, async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, userId, status, startDate, endDate } = req.query;
+    const { page = 1, limit = 20, userId, status, startDate, endDate, month } = req.query;
     const offset = (page - 1) * limit;
 
     const where = {};
@@ -29,7 +29,16 @@ router.get('/', authenticateToken, async (req, res, next) => {
       where.status = status;
     }
     
-    if (startDate || endDate) {
+    // Handle month filter (YYYY-MM format)
+    if (month) {
+      const [year, monthNum] = month.split('-');
+      const startOfMonth = new Date(year, monthNum - 1, 1);
+      const endOfMonth = new Date(year, monthNum, 0, 23, 59, 59);
+      where.createdAt = {
+        [Op.gte]: startOfMonth,
+        [Op.lte]: endOfMonth
+      };
+    } else if (startDate || endDate) {
       where.startTime = {};
       if (startDate) {
         where.startTime[Op.gte] = new Date(startDate);
@@ -122,38 +131,39 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
 router.post('/', 
   authenticateToken, 
   requirePermission('manage_sales'),
-  [
-    body('openingCash').isNumeric().withMessage('Opening cash must be a number')
-  ],
   async (req, res, next) => {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      // Check if user already has an active shift
-      const activeShift = await Shift.findOne({
-        where: {
-          userId: req.user.id,
-          status: 'active'
-        }
-      });
-
-      if (activeShift) {
-        return res.status(400).json({
-          success: false,
-          message: 'You already have an active shift'
-        });
-      }
-
       const shift = await Shift.create({
         userId: req.user.id,
+        attendantName: req.body.attendantName,
+        shiftStartTime: req.body.shiftStartTime,
+        startTime: req.body.shiftStartTime || new Date(),
+        petrolOpening: req.body.petrolOpening,
+        petrolClosing: req.body.petrolClosing,
+        petrolBuyPrice: req.body.petrolBuyPrice,
+        petrolSellPrice: req.body.petrolSellPrice,
+        petrolTankStock: req.body.petrolTankStock,
+        dieselOpening: req.body.dieselOpening,
+        dieselClosing: req.body.dieselClosing,
+        dieselBuyPrice: req.body.dieselBuyPrice,
+        dieselSellPrice: req.body.dieselSellPrice,
+        dieselTankStock: req.body.dieselTankStock,
+        keroseneOpening: req.body.keroseneOpening,
+        keroseneClosing: req.body.keroseneClosing,
+        keroseneBuyPrice: req.body.keroseneBuyPrice,
+        keroseneSellPrice: req.body.keroseneSellPrice,
+        keroseneTankStock: req.body.keroseneTankStock,
+        fuelCashCollected: req.body.fuelCashCollected,
+        fuelMpesaCollected: req.body.fuelMpesaCollected,
+        carWashesCount: req.body.carWashesCount,
+        carWashCash: req.body.carWashCash,
+        parkingFeesCollected: req.body.parkingFeesCollected,
+        gas6kgSold: req.body.gas6kgSold,
+        gas13kgSold: req.body.gas13kgSold,
+        gasCashCollected: req.body.gasCashCollected,
+        gasMpesaCollected: req.body.gasMpesaCollected,
         openingCash: req.body.openingCash || 0,
-        startTime: new Date()
+        status: 'closed'
       });
 
       res.status(201).json({
@@ -215,6 +225,46 @@ router.put('/:id/close', authenticateToken, requirePermission('manage_sales'), a
   }
 });
 
+// @desc    Update shift (Admin only, must be unlocked)
+// @route   PUT /api/shifts/:id
+// @access  Private/Admin
+router.put('/:id', authenticateToken, async (req, res, next) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can update shifts'
+      });
+    }
+
+    const shift = await Shift.findByPk(req.params.id);
+    if (!shift) {
+      return next(new ErrorResponse('Shift not found', 404));
+    }
+
+    // Check if shift is locked
+    if (shift.isLocked) {
+      return res.status(403).json({
+        success: false,
+        message: 'Cannot update locked shift. Unlock it first.'
+      });
+    }
+
+    // Update shift with provided data
+    await shift.update(req.body);
+
+    res.json({
+      success: true,
+      message: 'Shift updated successfully',
+      data: shift
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @desc    Get shift summary
 // @route   GET /api/shifts/:id/summary
 // @access  Private
@@ -259,6 +309,68 @@ router.get('/:id/summary', authenticateToken, async (req, res, next) => {
           netSales: sales.reduce((sum, sale) => sum + sale.totalAmount, 0) - expenses.reduce((sum, expense) => sum + expense.amount, 0)
         }
       }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @desc    Unlock shift for editing (Admin only)
+// @route   PUT /api/shifts/:id/unlock
+// @access  Private/Admin
+router.put('/:id/unlock', authenticateToken, async (req, res, next) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can unlock shifts'
+      });
+    }
+
+    const shift = await Shift.findByPk(req.params.id);
+    if (!shift) {
+      return next(new ErrorResponse('Shift not found', 404));
+    }
+
+    await shift.update({ isLocked: false });
+
+    res.json({
+      success: true,
+      message: 'Shift unlocked successfully',
+      data: shift
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @desc    Lock shift (Admin only)
+// @route   PUT /api/shifts/:id/lock
+// @access  Private/Admin
+router.put('/:id/lock', authenticateToken, async (req, res, next) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only administrators can lock shifts'
+      });
+    }
+
+    const shift = await Shift.findByPk(req.params.id);
+    if (!shift) {
+      return next(new ErrorResponse('Shift not found', 404));
+    }
+
+    await shift.update({ isLocked: true });
+
+    res.json({
+      success: true,
+      message: 'Shift locked successfully',
+      data: shift
     });
 
   } catch (error) {
