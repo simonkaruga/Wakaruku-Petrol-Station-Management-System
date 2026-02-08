@@ -27,11 +27,31 @@
    - **Name**: `wakaruku-backend`
    - **Region**: ⚠️ **MUST match database region** (e.g., Oregon)
    - **Branch**: `main`
-   - **Root Directory**: `backend`
+   - **Root Directory**: `backend` ⚠️ **Type exactly: backend (no spaces, no slashes)**
    - **Runtime**: Node
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
    - **Plan**: Free
+
+### 📁 Root Directory Explained:
+
+Your project structure:
+```
+Wakaruku-Petrol-Station-Management-System/
+├── backend/
+│   ├── package.json  ← Backend code is here
+│   ├── server.js
+│   └── ...
+└── frontend/
+    ├── package.json  ← Frontend code is here
+    └── ...
+```
+
+**Root Directory Rules:**
+- ✅ If `package.json` is in a folder (e.g., `/backend/package.json`) → Type folder name: `backend`
+- ✅ If `package.json` is at repo root (e.g., `/package.json`) → Leave empty
+
+**For this project:** Type `backend` (no leading/trailing spaces or slashes)
 
 ⚠️ **CRITICAL**: Backend and database MUST be in the same region for internal connection to work!
 
