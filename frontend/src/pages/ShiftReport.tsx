@@ -271,8 +271,8 @@ const ShiftReport = () => {
                 </div>
                 <div style={{ marginTop: '12px', padding: '12px', background: 'white', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '14px', color: '#374151' }}>Remaining in Tank:</span>
-                  <span style={{ fontSize: '18px', fontWeight: '700', color: petrolRemaining < 1000 ? '#ef4444' : '#10b981' }}>
-                    {petrolRemaining.toFixed(2)} L {petrolRemaining < 1000 && '⚠️ Low Stock!'}
+                  <span style={{ fontSize: '18px', fontWeight: '700', color: petrolRemaining < 500 ? '#ef4444' : '#10b981' }}>
+                    {petrolRemaining.toFixed(2)} L {petrolRemaining < 500 && '⚠️ Low Stock!'}
                   </span>
                 </div>
               </div>
@@ -308,8 +308,8 @@ const ShiftReport = () => {
                 </div>
                 <div style={{ marginTop: '12px', padding: '12px', background: 'white', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '14px', color: '#374151' }}>Remaining in Tank:</span>
-                  <span style={{ fontSize: '18px', fontWeight: '700', color: dieselRemaining < 800 ? '#ef4444' : '#10b981' }}>
-                    {dieselRemaining.toFixed(2)} L {dieselRemaining < 800 && '⚠️ Low Stock!'}
+                  <span style={{ fontSize: '18px', fontWeight: '700', color: dieselRemaining < 500 ? '#ef4444' : '#10b981' }}>
+                    {dieselRemaining.toFixed(2)} L {dieselRemaining < 500 && '⚠️ Low Stock!'}
                   </span>
                 </div>
               </div>
@@ -345,8 +345,8 @@ const ShiftReport = () => {
                 </div>
                 <div style={{ marginTop: '12px', padding: '12px', background: 'white', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '14px', color: '#374151' }}>Remaining in Tank:</span>
-                  <span style={{ fontSize: '18px', fontWeight: '700', color: keroseneRemaining < 500 ? '#ef4444' : '#10b981' }}>
-                    {keroseneRemaining.toFixed(2)} L {keroseneRemaining < 500 && '⚠️ Low Stock!'}
+                  <span style={{ fontSize: '18px', fontWeight: '700', color: keroseneRemaining < 200 ? '#ef4444' : '#10b981' }}>
+                    {keroseneRemaining.toFixed(2)} L {keroseneRemaining < 200 && '⚠️ Low Stock!'}
                   </span>
                 </div>
               </div>
