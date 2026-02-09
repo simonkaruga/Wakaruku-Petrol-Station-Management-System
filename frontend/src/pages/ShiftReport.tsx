@@ -41,26 +41,41 @@ const ShiftReport = () => {
   const [showReport, setShowReport] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Load settings from localStorage on mount
+  // Load settings from localStorage on mount and when settings change
   useEffect(() => {
-    const saved = localStorage.getItem('stationSettings');
-    if (saved) {
-      const settings = JSON.parse(saved);
-      setFormData(prev => ({
-        ...prev,
-        petrolTankStock: settings.petrolTankStock || prev.petrolTankStock,
-        dieselTankStock: settings.dieselTankStock || prev.dieselTankStock,
-        keroseneTankStock: settings.keroseneTankStock || prev.keroseneTankStock,
-        petrolBuyPrice: settings.petrolBuyPrice || prev.petrolBuyPrice,
-        petrolSellPrice: settings.petrolSellPrice || prev.petrolSellPrice,
-        dieselBuyPrice: settings.dieselBuyPrice || prev.dieselBuyPrice,
-        dieselSellPrice: settings.dieselSellPrice || prev.dieselSellPrice,
-        keroseneBuyPrice: settings.keroseneBuyPrice || prev.keroseneBuyPrice,
-        keroseneSellPrice: settings.keroseneSellPrice || prev.keroseneSellPrice,
-        gas6kgStock: settings.gas6kgStock || prev.gas6kgStock,
-        gas13kgStock: settings.gas13kgStock || prev.gas13kgStock,
-      }));
-    }
+    const loadSettingsFromStorage = () => {
+      const saved = localStorage.getItem('stationSettings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        setFormData(prev => ({
+          ...prev,
+          petrolTankStock: settings.petrolTankStock || prev.petrolTankStock,
+          dieselTankStock: settings.dieselTankStock || prev.dieselTankStock,
+          keroseneTankStock: settings.keroseneTankStock || prev.keroseneTankStock,
+          petrolBuyPrice: settings.petrolBuyPrice || prev.petrolBuyPrice,
+          petrolSellPrice: settings.petrolSellPrice || prev.petrolSellPrice,
+          dieselBuyPrice: settings.dieselBuyPrice || prev.dieselBuyPrice,
+          dieselSellPrice: settings.dieselSellPrice || prev.dieselSellPrice,
+          keroseneBuyPrice: settings.keroseneBuyPrice || prev.keroseneBuyPrice,
+          keroseneSellPrice: settings.keroseneSellPrice || prev.keroseneSellPrice,
+          gas6kgStock: settings.gas6kgStock || prev.gas6kgStock,
+          gas13kgStock: settings.gas13kgStock || prev.gas13kgStock,
+        }));
+      }
+    };
+
+    loadSettingsFromStorage();
+
+    // Listen for storage changes (when settings are updated)
+    window.addEventListener('storage', loadSettingsFromStorage);
+    
+    // Also listen for custom event when settings are saved in same tab
+    window.addEventListener('settingsUpdated', loadSettingsFromStorage);
+
+    return () => {
+      window.removeEventListener('storage', loadSettingsFromStorage);
+      window.removeEventListener('settingsUpdated', loadSettingsFromStorage);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

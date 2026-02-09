@@ -40,6 +40,10 @@ const Settings = () => {
     setLoading(true);
     // Save to localStorage so it persists
     localStorage.setItem('stationSettings', JSON.stringify(settings));
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('settingsUpdated'));
+    
     setSuccess('Settings saved successfully! Employees will see these values.');
     setLoading(false);
     setTimeout(() => setSuccess(''), 3000);
