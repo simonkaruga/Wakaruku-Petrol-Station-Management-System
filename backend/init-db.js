@@ -172,8 +172,13 @@ async function initDatabase() {
     process.exit(0);
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
+    // Don't exit on error, let server try to start anyway
     process.exit(1);
   }
 }
 
-initDatabase();
+if (require.main === module) {
+  initDatabase();
+} else {
+  module.exports = initDatabase;
+}
