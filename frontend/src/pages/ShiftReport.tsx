@@ -62,6 +62,10 @@ const ShiftReport = () => {
           keroseneSellPrice: settings.keroseneSellPrice || prev.keroseneSellPrice,
           gas6kgStock: settings.gas6kgStock || prev.gas6kgStock,
           gas13kgStock: settings.gas13kgStock || prev.gas13kgStock,
+          // Load last closing readings as opening readings
+          petrolOpening: settings.lastPetrolClosing || prev.petrolOpening,
+          dieselOpening: settings.lastDieselClosing || prev.dieselOpening,
+          keroseneOpening: settings.lastKeroseneClosing || prev.keroseneOpening
         }));
       }
     };
@@ -101,14 +105,18 @@ const ShiftReport = () => {
         const newGas6kgStock = gas6kgRemaining;
         const newGas13kgStock = gas13kgRemaining;
         
-        // Update settings with new stock levels
+        // Update settings with new stock levels and save closing readings as next opening
         const updatedSettings = {
           ...settings,
           petrolTankStock: newPetrolStock.toString(),
           dieselTankStock: newDieselStock.toString(),
           keroseneTankStock: newKeroseneStock.toString(),
           gas6kgStock: newGas6kgStock.toString(),
-          gas13kgStock: newGas13kgStock.toString()
+          gas13kgStock: newGas13kgStock.toString(),
+          // Save closing readings for next shift's opening
+          lastPetrolClosing: formData.petrolClosing,
+          lastDieselClosing: formData.dieselClosing,
+          lastKeroseneClosing: formData.keroseneClosing
         };
         
         localStorage.setItem('stationSettings', JSON.stringify(updatedSettings));
