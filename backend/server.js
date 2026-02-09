@@ -30,6 +30,9 @@ const { scheduleBackups } = require('./utils/backup');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy for Render
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
@@ -135,20 +138,20 @@ async function startServer() {
 
     // Create default admin user if not exists
     const bcrypt = require('bcryptjs');
-    const { User } = require('./models');
+    const db = require('./models');
     
     try {
-      const adminExists = await User.findOne({ where: { username: 'simon' } });
-      if (!adminExists) {
+      // Use raw query to check and create user
+      const [users] = await sequelize.query(
+        "SELECT * FROM users WHERE username = 'simon' LIMIT 1"
+      );
+      
+      if (users.length === 0) {
         const hashedPassword = await bcrypt.hash('admin123', 10);
-        await User.create({
-          username: 'simon',
-          password: hashedPassword,
-          firstName: 'Simon',
-          lastName: 'Admin',
-          role: 'admin',
-          isActive: true
-        });
+        await sequelize.query(
+          `INSERT INTO users (username, password, first_name, last_name, role, is_active, created_at) 
+           VALUES ('simon', '${hashedPassword}', 'Simon', 'Admin', 'admin', true, NOW())`
+        );
         console.log('✅ Default admin user created: simon / admin123');
       } else {
         console.log('✅ Admin user already exists');
