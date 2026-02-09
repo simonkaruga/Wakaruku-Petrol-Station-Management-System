@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -121,125 +123,112 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: '50px', height: '50px', border: '4px solid #e0e0e0', borderTop: '4px solid #667eea', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
+        <p style={{ color: '#666', fontSize: '14px' }}>Loading...</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
-            <p className="text-gray-600 mt-1">Manage system users and permissions</p>
+    <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
+      <Sidebar />
+      <div style={{ marginLeft: '256px' }}>
+        <Navbar />
+        <div style={{ padding: '32px' }}>
+          <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#1a202c', marginBottom: '8px' }}>User Management</h1>
+              <p style={{ color: '#718096', fontSize: '14px' }}>Manage system users and permissions</p>
+            </div>
+            <button onClick={handleCreate} style={{ padding: '12px 24px', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 2px 4px rgba(102, 126, 234, 0.3)' }}>
+              <span style={{ fontSize: '18px' }}>+</span> Add User
+            </button>
           </div>
-          <button onClick={handleCreate} className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 font-medium">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Add User
-          </button>
-        </div>
 
-        {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-6 py-4 rounded-lg mb-6 shadow-sm">{error}</div>}
-        {success && <div className="bg-green-50 border-l-4 border-green-500 text-green-800 px-6 py-4 rounded-lg mb-6 shadow-sm">{success}</div>}
+          {error && <div style={{ background: '#fee2e2', borderLeft: '4px solid #ef4444', color: '#991b1b', padding: '16px 20px', borderRadius: '8px', marginBottom: '24px' }}>{error}</div>}
+          {success && <div style={{ background: '#d1fae5', borderLeft: '4px solid #10b981', color: '#065f46', padding: '16px 20px', borderRadius: '8px', marginBottom: '24px' }}>{success}</div>}
 
-        <div className="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200">
-          <table className="min-w-full">
-            <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Username</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Last Login</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {users.map(user => (
-                <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-150">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold mr-3">
-                        {user.username.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-medium text-gray-900">{user.username}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800">{user.role}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-3 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800' : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800'}`}>
-                      {user.isActive ? '● Active' : '○ Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                    <button onClick={() => handleEdit(user)} className="text-blue-600 hover:text-blue-800 font-medium hover:underline">Edit</button>
-                    <button onClick={() => handleResetPassword(user)} className="text-amber-600 hover:text-amber-800 font-medium hover:underline">Reset</button>
-                    <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-800 font-medium hover:underline">Delete</button>
-                  </td>
+          <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
+                <tr>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Username</th>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email</th>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Role</th>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Last Login</th>
+                  <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <td style={{ padding: '16px 20px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '600', fontSize: '16px' }}>
+                          {user.username.charAt(0).toUpperCase()}
+                        </div>
+                        <span style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>{user.username}</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '14px', color: '#4b5563' }}>{user.email}</td>
+                    <td style={{ padding: '16px 20px' }}>
+                      <span style={{ display: 'inline-block', padding: '4px 12px', fontSize: '12px', fontWeight: '500', borderRadius: '12px', background: '#eff6ff', color: '#1e40af' }}>{user.role}</span>
+                    </td>
+                    <td style={{ padding: '16px 20px' }}>
+                      <span style={{ display: 'inline-block', padding: '4px 12px', fontSize: '12px', fontWeight: '500', borderRadius: '12px', background: user.isActive ? '#d1fae5' : '#fee2e2', color: user.isActive ? '#065f46' : '#991b1b' }}>
+                        {user.isActive ? '● Active' : '○ Inactive'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6b7280' }}>
+                      {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}
+                    </td>
+                    <td style={{ padding: '16px 20px' }}>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <button onClick={() => handleEdit(user)} style={{ color: '#3b82f6', fontSize: '13px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>Edit</button>
+                        <button onClick={() => handleResetPassword(user)} style={{ color: '#f59e0b', fontSize: '13px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>Reset</button>
+                        <button onClick={() => handleDelete(user.id)} style={{ color: '#ef4444', fontSize: '13px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              {modalMode === 'create' ? '✨ Create User' : modalMode === 'edit' ? '✏️ Edit User' : '🔑 Reset Password'}
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div style={{ background: 'white', borderRadius: '12px', padding: '32px', width: '100%', maxWidth: '500px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '24px', color: '#1a202c' }}>
+              {modalMode === 'create' ? 'Create New User' : modalMode === 'edit' ? 'Edit User' : 'Reset Password'}
             </h2>
             
-            {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-lg mb-4">{error}</div>}
+            {error && <div style={{ background: '#fee2e2', borderLeft: '4px solid #ef4444', color: '#991b1b', padding: '12px 16px', borderRadius: '6px', marginBottom: '20px', fontSize: '14px' }}>{error}</div>}
             
             <form onSubmit={handleSubmit}>
               {modalMode === 'create' && (
                 <>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Username</label>
-                    <input
-                      type="text"
-                      value={formData.username}
-                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      required
-                    />
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Username</label>
+                    <input type="text" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required />
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Email</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      required
-                    />
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Email</label>
+                    <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required />
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Password</label>
-                    <input
-                      type="password"
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      required
-                      minLength={8}
-                    />
-                    <p className="text-xs text-gray-600 mt-1">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Password</label>
+                    <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required minLength={8} />
+                    <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Role</label>
-                    <select
-                      value={formData.role}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    >
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Role</label>
+                    <select value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }}>
                       <option value="admin">Admin</option>
                       <option value="manager">Manager</option>
                       <option value="bookkeeper">Bookkeeper</option>
@@ -252,23 +241,13 @@ const UserManagement: React.FC = () => {
 
               {modalMode === 'edit' && (
                 <>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Email</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      required
-                    />
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Email</label>
+                    <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required />
                   </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-semibold mb-2 text-gray-700">Role</label>
-                    <select
-                      value={formData.role}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    >
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Role</label>
+                    <select value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }}>
                       <option value="admin">Admin</option>
                       <option value="manager">Manager</option>
                       <option value="bookkeeper">Bookkeeper</option>
@@ -276,47 +255,28 @@ const UserManagement: React.FC = () => {
                       <option value="accountant">Accountant</option>
                     </select>
                   </div>
-                  <div className="mb-4">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.isActive}
-                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                        className="mr-3 w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      />
-                      <span className="text-sm font-semibold text-gray-700">Active</span>
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} style={{ marginRight: '8px', width: '18px', height: '18px' }} />
+                      <span style={{ fontSize: '14px', fontWeight: '500', color: '#374151' }}>Active</span>
                     </label>
                   </div>
                 </>
               )}
 
               {modalMode === 'reset' && (
-                <div className="mb-4">
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">New Password</label>
-                  <input
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    required
-                    minLength={8}
-                  />
-                  <p className="text-xs text-gray-600 mt-1">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>New Password</label>
+                  <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required minLength={8} />
+                  <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
                 </div>
               )}
 
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700 transition-all"
-                >
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '28px' }}>
+                <button type="button" onClick={() => setShowModal(false)} style={{ padding: '10px 20px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', background: 'white', color: '#374151' }}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all font-medium"
-                >
+                <button type="submit" style={{ padding: '10px 20px', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>
                   {modalMode === 'create' ? 'Create User' : modalMode === 'edit' ? 'Update User' : 'Reset Password'}
                 </button>
               </div>
@@ -324,6 +284,13 @@ const UserManagement: React.FC = () => {
           </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
