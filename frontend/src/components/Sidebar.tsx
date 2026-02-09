@@ -40,7 +40,10 @@ const Sidebar = () => {
   if (admin) {
     menuSections.push({
       title: 'ADMIN',
-      items: [{ path: '/settings', label: 'Settings' }]
+      items: [
+        { path: '/users', label: 'User Management' },
+        { path: '/settings', label: 'Settings' }
+      ]
     });
   }
 

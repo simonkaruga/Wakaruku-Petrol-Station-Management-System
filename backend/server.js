@@ -10,6 +10,7 @@ dotenv.config();
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
 const productsRoutes = require('./routes/products');
 const salesRoutes = require('./routes/sales');
 const reportsRoutes = require('./routes/reports');
@@ -92,6 +93,7 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
+      users: '/api/users',
       products: '/api/products',
       sales: '/api/sales',
       reports: '/api/reports',
@@ -107,6 +109,7 @@ app.get('/', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/reports', reportsRoutes);

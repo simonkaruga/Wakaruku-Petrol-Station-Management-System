@@ -13,6 +13,7 @@ import Credit from './pages/Credit';
 import Expenses from './pages/Expenses';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import UserManagement from './pages/UserManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -91,6 +92,14 @@ function App() {
           element={
             <ProtectedRoute requireAdmin>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute requireAdmin>
+              <UserManagement />
             </ProtectedRoute>
           }
         />
