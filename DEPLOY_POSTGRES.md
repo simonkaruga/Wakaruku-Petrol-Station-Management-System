@@ -25,8 +25,36 @@
    | **Database** | `wakaruku_petrol_db` | Actual database name |
    | **User** | `wakaruku_user` | Database username |
    | **Region** | `Oregon (US West)` | Choose closest to your users |
-   | **PostgreSQL Version** | `16` (default) | Latest stable version |
+   | **PostgreSQL Version** | `16` (recommended) | See version guide below |
    | **Plan** | **Free** | $0/month, 1GB storage, 90 days |
+
+### 🔢 PostgreSQL Version Selection:
+
+**Available Versions on Render:**
+- PostgreSQL 16 (Latest) ✅ **Recommended**
+- PostgreSQL 15
+- PostgreSQL 14
+- PostgreSQL 13
+- PostgreSQL 12
+
+**Which version to choose?**
+
+✅ **Use PostgreSQL 16** (Default & Recommended)
+- Latest features and performance improvements
+- Best security updates
+- Long-term support
+- Compatible with your Node.js app
+
+⚠️ **Use older versions only if:**
+- You have specific compatibility requirements
+- Migrating from an existing database
+- Your app requires specific PostgreSQL features from that version
+
+**For this project:** PostgreSQL 16 works perfectly with:
+- Node.js 22.x
+- Sequelize ORM
+- pg (node-postgres) driver
+- All your backend features
 
 3. **Click "Create Database"**
    - Wait 2-3 minutes for provisioning
@@ -117,6 +145,55 @@ Your backend will automatically create tables on first run with:
 ```javascript
 await sequelize.sync({ alter: true });
 ```
+
+## 📊 PostgreSQL Version Compatibility
+
+### Your Stack:
+- **Node.js**: 22.x (on Render)
+- **PostgreSQL**: 16 (recommended)
+- **Sequelize**: 6.x
+- **pg (node-postgres)**: 8.x
+
+### Compatibility Matrix:
+
+| PostgreSQL Version | Node.js 22 | Sequelize 6 | Status |
+|-------------------|------------|-------------|--------|
+| PostgreSQL 16 | ✅ Yes | ✅ Yes | **Recommended** |
+| PostgreSQL 15 | ✅ Yes | ✅ Yes | Supported |
+| PostgreSQL 14 | ✅ Yes | ✅ Yes | Supported |
+| PostgreSQL 13 | ✅ Yes | ✅ Yes | Supported |
+| PostgreSQL 12 | ✅ Yes | ✅ Yes | End of life soon |
+
+### Why PostgreSQL 16?
+
+✅ **Performance:**
+- Faster query execution
+- Better indexing
+- Improved connection handling
+
+✅ **Security:**
+- Latest security patches
+- Better authentication
+- Enhanced encryption
+
+✅ **Features:**
+- JSON improvements
+- Better full-text search
+- Enhanced monitoring
+
+✅ **Support:**
+- Active development
+- Long-term support until 2028
+- Regular updates
+
+### Version Upgrade Path:
+
+If you need to upgrade later:
+1. Create new database with newer version
+2. Export data: `pg_dump old_db > backup.sql`
+3. Import to new: `psql new_db < backup.sql`
+4. Update DATABASE_URL
+5. Test thoroughly
 
 ## 📊 Database Plans Comparison
 
