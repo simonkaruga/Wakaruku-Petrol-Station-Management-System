@@ -218,13 +218,13 @@ const UserManagement: React.FC = () => {
                     <input type="text" value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required />
                   </div>
                   <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Email</label>
-                    <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required />
+                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Email (Optional)</label>
+                    <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} />
                   </div>
                   <div style={{ marginBottom: '20px' }}>
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Password</label>
                     <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required minLength={8} />
-                    <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
+                    <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Minimum 8 characters</p>
                   </div>
                   <div style={{ marginBottom: '20px' }}>
                     <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>Role</label>
@@ -268,7 +268,7 @@ const UserManagement: React.FC = () => {
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#374151' }}>New Password</label>
                   <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px' }} required minLength={8} />
-                  <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
+                  <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>Minimum 8 characters</p>
                 </div>
               )}
 

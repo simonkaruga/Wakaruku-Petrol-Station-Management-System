@@ -82,8 +82,8 @@ router.get('/:id', async (req, res) => {
 router.post('/',
   [
     body('username').isLength({ min: 3, max: 50 }).matches(/^[a-zA-Z0-9_]+$/),
-    body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 8 }).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/),
+    body('email').optional({ checkFalsy: true }).isEmail().normalizeEmail(),
+    body('password').isLength({ min: 8 }),
     body('role').isIn(['admin', 'manager', 'bookkeeper', 'attendant', 'accountant'])
   ],
   handleValidationErrors,
@@ -94,7 +94,7 @@ router.post('/',
       if (await User.usernameExists(username)) {
         return res.status(400).json({ success: false, message: 'Username already exists' });
       }
-      if (await User.emailExists(email)) {
+      if (email && await User.emailExists(email)) {
         return res.status(400).json({ success: false, message: 'Email already exists' });
       }
 
