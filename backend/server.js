@@ -57,14 +57,19 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'];
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (mobile apps, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -132,8 +137,8 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Database connection established successfully.');
 
-    // Sync database models
-    await sequelize.sync({ alter: true });
+    // Sync database models - create tables if they don't exist
+    await sequelize.sync({ force: false });
     console.log('Database synchronized.');
 
     // Create default admin user if not exists
